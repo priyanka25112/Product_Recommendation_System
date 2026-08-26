@@ -17,8 +17,9 @@ st.set_page_config(
 # CUSTOM CSS
 # ==========================================================
 
-st.markdown("""
-<style>
+st.markdown(
+    """
+    <style>
 
     /* =====================================================
        GENERAL
@@ -29,6 +30,17 @@ st.markdown("""
         padding-bottom: 2rem;
     }
 
+
+    /* =====================================================
+       MAIN TITLE
+       ===================================================== */
+
+    h1 {
+        font-size: 42px;
+        font-weight: 800;
+    }
+
+
     /* =====================================================
        RECOMMENDATION TITLE
        ===================================================== */
@@ -37,8 +49,8 @@ st.markdown("""
         font-size: 16px;
         font-weight: 700;
         margin-bottom: 8px;
-        white-space: nowrap;
     }
+
 
     /* =====================================================
        PRODUCT INFORMATION
@@ -49,14 +61,16 @@ st.markdown("""
         margin-top: 3px;
     }
 
+
     /* =====================================================
        PRICE
        ===================================================== */
 
     .price {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 700;
     }
+
 
     /* =====================================================
        SIMILARITY SCORE
@@ -67,6 +81,7 @@ st.markdown("""
         font-weight: 600;
     }
 
+
     /* =====================================================
        RECOMMENDATION COLUMNS
        ===================================================== */
@@ -76,15 +91,19 @@ st.markdown("""
         padding-right: 5px;
     }
 
-</style>
-""", unsafe_allow_html=True)
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 # ==========================================================
 # TITLE
 # ==========================================================
 
-st.title("🛍️ Product Recommendation System")
+st.title(
+    "🛍️ Product Recommendation System"
+)
 
 st.write(
     "Enter a Product ID to discover similar products."
@@ -97,14 +116,19 @@ st.divider()
 # BENTOML API
 # ==========================================================
 
-API_URL = "https://product-recommendation-system-z1xn.onrender.com/recommend"
+API_URL = (
+    "https://product-recommendation-system-z1xn.onrender.com"
+    "/recommend"
+)
 
 
 # ==========================================================
 # PRODUCT ID INPUT
 # ==========================================================
 
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns(
+    [1, 2, 1]
+)
 
 with col2:
 
@@ -128,7 +152,8 @@ with col2:
 if get_recommendations:
 
     payload = {
-        "product_id": int(product_id)
+        "product_id": int(product_id),
+        "top_n": 5
     }
 
     try:
@@ -140,7 +165,7 @@ if get_recommendations:
         response = requests.post(
             API_URL,
             json=payload,
-            timeout=30
+            timeout=60
         )
 
 
@@ -207,7 +232,7 @@ if get_recommendations:
 
                             st.image(
                                 image,
-                                use_container_width=True
+                                width=350
                             )
 
                         else:
@@ -298,12 +323,12 @@ if get_recommendations:
 
 
                         # ==========================================
-                        # CREATE 4 COLUMNS
+                        # CREATE COLUMNS
                         # ==========================================
 
                         columns = st.columns(
-                            4,
-                            gap="small"
+                            len(row),
+                            gap="medium"
                         )
 
 
@@ -311,7 +336,10 @@ if get_recommendations:
                         # DISPLAY PRODUCTS
                         # ==========================================
 
-                        for index, (column, product) in enumerate(
+                        for index, (
+                            column,
+                            product
+                        ) in enumerate(
                             zip(columns, row),
                             start=start + 1
                         ):
@@ -345,6 +373,12 @@ if get_recommendations:
                                 )
 
 
+                                brand = product.get(
+                                    "brand",
+                                    "N/A"
+                                )
+
+
                                 price = product.get(
                                     "price",
                                     "N/A"
@@ -357,131 +391,127 @@ if get_recommendations:
 
 
                                 # ==================================
-                                # RECOMMENDATION NUMBER
+                                # PRODUCT CARD
                                 # ==================================
 
-                                st.markdown(
-                                    f"### 🛍️ Recommendation #{index}"
-                                )
+                                with st.container(
+                                    border=True
+                                ):
 
+                                    # ==============================
+                                    # RECOMMENDATION NUMBER
+                                    # ==============================
 
-                                # ==================================
-                                # PRODUCT IMAGE
-                                # ==================================
-
-                                if image:
-
-                                    st.image(
-                                        image,
-                                        use_container_width=True
-                                    )
-
-                                else:
-
-                                    st.info(
-                                        "Image unavailable"
+                                    st.markdown(
+                                        f"### 🛍️ Recommendation #{index}"
                                     )
 
 
-                                # ==================================
-                                # PRODUCT
-                                # ==================================
+                                    # ==============================
+                                    # PRODUCT IMAGE
+                                    # ==============================
 
-                                st.markdown(
-                                    "**Product**"
-                                )
+                                    if image:
 
+                                        st.image(
+                                            image,
+                                            width=180
+                                        )
 
-                                st.write(
-                                    f"🛍️ {title}"
-                                )
+                                    else:
 
-
-                                # ==================================
-                                # PRODUCT ID
-                                # ==================================
-
-                                st.markdown(
-                                    "**Product ID**"
-                                )
-
-
-                                st.code(
-                                    str(product_id_value),
-                                    language=None
-                                )
-
-
-                                # ==================================
-                                # CATEGORY
-                                # ==================================
-
-                                st.markdown(
-                                    "**Category**"
-                                )
-
-
-                                st.write(
-                                    category
-                                )
-
-
-                                # ==================================
-                                # PRICE
-                                # ==================================
-
-                                st.markdown(
-                                    "**Price**"
-                                )
-
-
-                                st.write(
-                                    f"₹{price}"
-                                )
-
-
-                                # ==================================
-                                # SIMILARITY SCORE
-                                # ==================================
-
-                                if score is not None:
-
-                                    try:
-
-                                        score_percentage = (
-                                            float(score) * 100
+                                        st.info(
+                                            "Image unavailable"
                                         )
 
 
-                                        st.markdown(
-                                            "**⭐ Similarity Score**"
-                                        )
+                                    # ==============================
+                                    # PRODUCT TITLE
+                                    # ==============================
+
+                                    st.markdown(
+                                        f"**{title}**"
+                                    )
 
 
-                                        st.write(
-                                            f"{score_percentage:.1f}%"
-                                        )
+                                    # ==============================
+                                    # PRODUCT ID
+                                    # ==============================
+
+                                    st.write(
+                                        f"🆔 Product ID: "
+                                        f"{product_id_value}"
+                                    )
 
 
-                                        # --------------------------
-                                        # SCORE PROGRESS
-                                        # --------------------------
+                                    
 
-                                        st.progress(
-                                            min(
-                                                max(
-                                                    score_percentage / 100,
-                                                    0
-                                                ),
-                                                1
+                                    # ==============================
+                                    # CATEGORY
+                                    # ==============================
+
+                                    st.write(
+                                        f"📂 Category: "
+                                        f"{category}"
+                                    )
+
+
+                                    # ==============================
+                                    # PRICE
+                                    # ==============================
+
+                                    st.markdown(
+                                        f"### ₹{price}"
+                                    )
+
+
+                                    # ==============================
+                                    # SIMILARITY SCORE
+                                    # ==============================
+
+                                    if score is not None:
+
+                                        try:
+
+                                            score_percentage = (
+                                                float(score) * 100
                                             )
-                                        )
 
-                                    except (ValueError, TypeError):
 
-                                        st.write(
-                                            "N/A"
-                                        )
+                                            st.write(
+                                                "⭐ Similarity Score"
+                                            )
+
+
+                                            st.write(
+                                                f"**{score_percentage:.1f}%**"
+                                            )
+
+
+                                            # ==========================
+                                            # SCORE PROGRESS
+                                            # ==========================
+
+                                            st.progress(
+                                                min(
+                                                    max(
+                                                        score_percentage
+                                                        / 100,
+                                                        0
+                                                    ),
+                                                    1
+                                                )
+                                            )
+
+
+                                        except (
+                                            ValueError,
+                                            TypeError
+                                        ):
+
+                                            st.write(
+                                                "Similarity: N/A"
+                                            )
 
 
                         # ==========================================
@@ -501,7 +531,8 @@ if get_recommendations:
         else:
 
             st.error(
-                f"API Error: {response.status_code}"
+                f"❌ API Error: "
+                f"{response.status_code}"
             )
 
 
@@ -517,8 +548,9 @@ if get_recommendations:
     except requests.exceptions.ConnectionError:
 
         st.error(
-            "❌ Cannot connect to BentoML. "
-            "Make sure BentoML is running on port 3000."
+            "❌ Cannot connect to the "
+            "recommendation service. "
+            "Please try again in a few seconds."
         )
 
 
@@ -530,7 +562,8 @@ if get_recommendations:
 
         st.error(
             "⏳ Request timed out. "
-            "Please check whether BentoML is running correctly."
+            "The recommendation service may be "
+            "starting up. Please try again."
         )
 
 
