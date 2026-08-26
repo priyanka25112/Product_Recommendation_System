@@ -97,7 +97,7 @@ st.divider()
 # BENTOML API
 # ==========================================================
 
-API_URL = "http://localhost:3000/recommend"
+API_URL = "https://product-recommendation-system-z1xn.onrender.com/recommend"
 
 
 # ==========================================================
