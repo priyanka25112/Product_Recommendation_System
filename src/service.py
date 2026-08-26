@@ -1,3 +1,4 @@
+import os
 import pickle
 import requests
 import bentoml
@@ -9,7 +10,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 # 1. LOAD MODEL
 # ============================================================
 
-model_path = r"C:\Users\priya\Desktop\Product_Recommendation_System\Models\tfidf_model.pkl"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+model_path = os.path.join(
+    BASE_DIR,
+    "Models",
+    "tfidf_model.pkl"
+)
 
 with open(model_path, "rb") as file:
     model = pickle.load(file)
@@ -230,3 +237,4 @@ class ProductRecommendationService:
             )
 
         return result
+    
